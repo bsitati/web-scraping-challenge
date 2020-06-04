@@ -14,6 +14,7 @@
     <link href="style.css" rel="stylesheet">
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
 </head>
   <body>
 
@@ -27,20 +28,24 @@
 		</div>
 		<div class="row">
 			<div class="col-md-8 card">
-				<h4 class="text-left">
+				<h3 class="text-left">
 					Featured Mars News
-				</h4>
-				<div class="card-body">
-					
-				  <img src="{{scrapings.featured_image_url}}" alt="Featured Image">
+				</h3>
+				<h4>{{scrapings.news_title}}</h4>
+				<p>{{scrapings.news_p}}</p>
+
+				<div class="card-body">			
+				  <img src="{{scrapings.featured_image_url}}" alt="Featured Image" width="480" height="300">
+				  
 				</div>
 			</div>
 
 			<div class="col-md-4">
+				<h3 class="text-left">
+				 Mars Facts
+				</h3>
 				<div class="card">
-					<h5 class="card-header">
-						Current Weather on Mars
-					</h5>
+					
 					<div class="card-body">
 						<p class="card-text">
 							Card content
@@ -64,11 +69,17 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="card">
-					<h5 class="card-header">
+					<h3 class="card-header text-center">
 						Mars Hemispheres
-					</h5>
+					</h3>
 				 <!-------- photos table-->
-				 <div class="card-body">
+				 <div class="card-body card-private">
+					 {%for row in scrapings.hemisphere_image_urls%}
+					 <p>{{ row.title }} </p>
+					 <!-- img src="{{scrapings.featured_image_url}}" alt="Featured Image" width="480" height="300"--->
+					 <img src="{{ row.img_url }}" alt="{{ row.title }}" width="300" height="300">
+       				 {% endfor %}
+
 
 					
 				 </div>
