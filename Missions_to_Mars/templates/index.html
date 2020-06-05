@@ -13,7 +13,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	
 </head>
   <body>
@@ -48,22 +49,12 @@
 					
 					<div class="card-body">
 						<p class="card-text">
-							Card content
+							{{scrapings.fact_html}} 
 						</p>
 					</div>
 					
 				</div>
-				<div class="card">
-					<h5 class="card-header">
-						Mars Facts
-					</h5>
-					<div class="card-body">
-						<p class="card-text">
-							Card content
-							
-						</p>
-					</div>
-				</div>
+				
 			</div>
 		</div>
 		<div class="row">
@@ -73,16 +64,15 @@
 						Mars Hemispheres
 					</h3>
 				 <!-------- photos table-->
-				 <div class="card-body card-private">
-					 {%for row in scrapings.hemisphere_image_urls%}
+				 
+					{%for row in scrapings.hemisphere_image_urls%}
+					 <div class="card-body col-6">
 					 <p>{{ row.title }} </p>
-					 <!-- img src="{{scrapings.featured_image_url}}" alt="Featured Image" width="480" height="300"--->
-					 <img src="{{ row.img_url }}" alt="{{ row.title }}" width="300" height="300">
-       				 {% endfor %}
-
-
-					
-				 </div>
+					 <img src="{{ row.href }}" alt="{{ row.title }}" width="300" height="300">
+					</div>
+					{% endfor %}
+				
+				 
 
 				</div>
 
