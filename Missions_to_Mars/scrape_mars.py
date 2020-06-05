@@ -3,7 +3,7 @@ import os
 from splinter import Browser
 from bs4 import BeautifulSoup
 import requests
-# import pandas as pd
+import pandas as pd
 import time
 from pprint import pprint
 import cssutils
@@ -73,93 +73,59 @@ def scrape_info():
 
     tb = soup.find_all('table', class_='tablepress tablepress-id-p-mars')
 
-    # facts_df = pd.read_html(url)
-    # output html table
-    # scrape_mars_data['fact_html'] = facts_df[0]
+    df = pd.read_html(url)[0]
+    df.columns = ['Description', 'Value']
+
+    # facts_df.columns =  ['Description', 'Value']
+            
+    fact_html = df.to_html(classes = 'table-stripped')
+
+    scrape_mars_data['fact_html'] = fact_html
 
     # --------------------------
     # Mars Hemispheres
 
-    hemisphere_image_urls =[]
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser = init_browser()
 
-    image_url1 = {}
-    url1 ='https://astrogeology.usgs.gov/search/map/Mars/Viking/cerberus_enhanced' 
-    html = requests.get(url1)
-    # soup = BeautifulSoup(html, 'html.parser')
-    soup = BeautifulSoup(html.text, 'html.parser')
+    browser.visit(url)
+    time.sleep(5)
+    html = browser.html
 
-    title1 = soup.find('h2', class_='title')
-    title1 = title1.text
+    soup = BeautifulSoup(html, 'html.parser')
 
-    img_url1 = soup.find("li").find('a')['href']
+    hemispheres = soup.find_all('div', class_='item')
+    # Create list to be populated with list
+    
+    hemisphere_image_urls = []
+    #iterate through hemisphere pages
+    fore_link = 'https://astrogeology.usgs.gov'
 
-    image_url1['title']=title1
-    image_url1['img_url']=img_url1
-
-    hemisphere_image_urls.append(image_url1)
+    for x in hemispheres:
+        #try:
+        #find link to page
+        href = x.find('a', class_='itemLink product-item')['href']
+        title = x.find('div', class_='description').find('h3').text
         
-        #append to dictionary 
-    image_url2 = {}
-    url2 ='https://astrogeology.usgs.gov/search/map/Mars/Viking/schiaparelli_enhanced' 
+    #     print(fore_link + href)
+        browser.visit(fore_link+href)
+        html = browser.html
 
-    html = requests.get(url2)
-    # soup = BeautifulSoup(html, 'html.parser')
-    soup = BeautifulSoup(html.text, 'html.parser')
+        soup = BeautifulSoup(html, 'html.parser')
+    #     print(result)
+        
+        image = soup.find('div', class_='downloads')
+        image_link = image.find('a')["href"]
+        
+                        
+        hemisphere_temp = {}
+        hemisphere_temp["title"] = title
+        hemisphere_temp["href"] =image_link
+        
+        
+        hemisphere_image_urls.append(hemisphere_temp)
 
-    title2 = soup.find('h2', class_='title')
-    title2 = title2.text
-
-    img_url2 = soup.find("li").find('a')['href']
-
-    image_url2['title']=title2
-    image_url2['img_url']=img_url2
-
-    hemisphere_image_urls.append(image_url2)  
-
-        #-------------------
-    image_url3 = {}
-    url3 ='https://astrogeology.usgs.gov/search/map/Mars/Viking/syrtis_major_enhanced' 
-
-    html = requests.get(url3)
-    # soup = BeautifulSoup(html, 'html.parser')
-    soup = BeautifulSoup(html.text, 'html.parser')
-
-    title3 = soup.find('h2', class_='title')
-    title3 = title3.text
-
-    img_url3 = soup.find("li").find('a')['href']
-
-    image_url3['title']=title3
-    image_url3['img_url']=img_url3
-
-    hemisphere_image_urls.append(image_url3)
-
-    #-------------------------------------
-    image_url4 = {}
-    url4 ='https://astrogeology.usgs.gov/search/map/Mars/Viking/valles_marineris_enhanced' 
-
-    html = requests.get(url4)
-    # soup = BeautifulSoup(html, 'html.parser')
-    soup = BeautifulSoup(html.text, 'html.parser')
-
-    title4 = soup.find('h2', class_='title')
-    title4 = title4.text
-
-    img_url4 = soup.find("li").find('a')['href']
-
-    #add to list
-    image_url4['title']=title4
-    image_url4['img_url']=img_url4
-
-    hemisphere_image_urls.append(image_url4)
-    #-------------------------------
-
-    scrape_mars_data['hemisphere_image_urls'] = hemisphere_image_urls
-    #----------------------------------
-
-    #return scrape_mars
+        scrape_mars_data['hemisphere_image_urls'] = hemisphere_image_urls
+            #return scrape_mars
 
     return scrape_mars_data
-
-
-scrape_info()
